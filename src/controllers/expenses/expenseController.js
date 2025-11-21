@@ -1,20 +1,37 @@
 const { Expense } = require("../../models");
 const upload = require("../../utils/fileUploader");
-const { updateBudgetAfterExpense } = require("../../services/budgetService");
 
 exports.createExpense = async (req, res) => {
     try {
+        const {
+            projectId,
+            activityId,
+            budgetId,
+            amount,
+            remainingBalanceToSpend,
+            reForcast,
+            overUnderspend,
+            actualFinancialYtd,
+            recentFinancialYtd,
+            expense_date,
+        } = req.body;
         const expenseData = {
-            ...req.body,
-            project: req.body.projectId,
-            activity: req.body.activityId,
-            budget: req.body.budgetId,
+            project: projectId,
+            activity: activityId,
+            budget: budgetId,
+            amount,
+            remaining_balance_to_spend:
+                remainingBalanceToSpend || 0,
+            re_forcast: reForcast || 0,
+            over_underspend: overUnderspend || 0,
+            actual_financial_ytd: actualFinancialYtd || 0,
+            recent_financial_ytd: recentFinancialYtd || 0,
+            expense_date,
             attachment: req.file ? req.file.path : null,
             created_by: req.user.id,
         };
         const expense = new Expense(expenseData);
         await expense.save();
-        await updateBudgetAfterExpense(req.body.budgetId, req.body.amount);
         res.status(201).json(expense);
     } catch (error) {
         res.status(400).json({ message: error.message });

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { User, Role, Ngo } = require("../../models");
 const {
     createUser: originalCreateUser,
-    findUserByEmail,
+    findUserByEmail,activateUser,deactivateUser
 } = require("../../services/authService");
 const { signToken } = require("../../config");
 
@@ -144,5 +144,29 @@ exports.getUsers = async (req, res) => {
     } catch (error) {
         console.error("Get users error:", error);
         res.status(500).json({ message: "Failed to fetch users" });
+    }
+};
+
+
+exports.activateUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await activateUser(userId);
+        console.log("use = ",user);
+        res.json(user);
+    } catch (error) {
+        console.error("Activate user error:", error);
+        res.status(500).json({ message: "Failed to activate user" });
+    }
+};
+
+exports.deactivateUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await deactivateUser(userId);
+        res.json(user);
+    } catch (error) {
+        console.error("Deactivate user error:", error);
+        res.status(500).json({ message: "Failed to deactivate user" });
     }
 };

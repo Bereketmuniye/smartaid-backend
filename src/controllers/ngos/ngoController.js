@@ -30,3 +30,16 @@ exports.getNgoById = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+exports.getNgoByUser = async (req, res) => {
+    try {
+        const ngo = await Ngo.findOne({ user: req.params.userId });
+        if (!ngo) {
+            return res.status(404).json({ error: 'NGO not found' });
+        }
+        res.status(200).json(ngo);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+    

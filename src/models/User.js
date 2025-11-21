@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
             required: true,
         },
         ngo: { type: mongoose.Schema.Types.ObjectId, ref: "Ngo" },
+        status: { type: String, default: "inactive" },
     },
     { timestamps: true },
 );

@@ -10,32 +10,23 @@ const { ProjectDonor } = require("../models");
 // Project routes
 router.post("/", auth, projectCtrl.createProject);
 router.get("/", projectCtrl.getProjects);
-router.get("/:id", projectCtrl.getProjectById);
+router.get("/:id", auth, projectCtrl.getProjectById);
+router.get("/donor/:donorId", auth, projectCtrl.getProjectsByDonor);
+router.get("/user/:userId", auth, projectCtrl.getProjectsByUser);
 
 // Sub-routes
 const activityRouter = express.Router();
 activityRouter.post("/", auth, activityCtrl.createActivity);
-activityRouter.get("/", activityCtrl.getActivitiesByProject);
-router.use("/:projectId/activities", activityRouter);
+activityRouter.get("/", auth, activityCtrl.getActivitiesByProject);
+router.use("/:projectId/activities", auth, activityRouter);
 
 const budgetRouter = express.Router({ mergeParams: true });
 budgetRouter.post("/", auth, budgetCtrl.createBudget);
-budgetRouter.get("/", budgetCtrl.getBudgetsByProject);
-router.use("/:projectId/budgets", budgetRouter);
+budgetRouter.get("/", auth, budgetCtrl.getBudgetsByProject);
+router.use("/:projectId/budgets", auth, budgetRouter);
 
 
-// Donor linking (using junction)
-router.post("/:projectId/donors", auth, async (req, res) => {
-    try {
-        const link = new ProjectDonor({
-            ...req.body,
-            project: req.params.projectId,
-        });
-        await link.save();
-        res.status(201).json(link);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-});
+
+
 
 module.exports = router;

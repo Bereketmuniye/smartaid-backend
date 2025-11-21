@@ -3,7 +3,7 @@ const { Budget } = require("../../models");
 
 exports.createBudget = async (req, res) => {
     try {
-        const { category, allocated_amount } = req.body;
+        const { budget_line_code, budget_line_name, budget_line_description, budget_line_amount } = req.body;
         let projectId = req.params.projectId;
 
         // Coerce to string and trim for safety
@@ -19,8 +19,10 @@ exports.createBudget = async (req, res) => {
 
         const budgetData = {
             project: projectId,
-            category,
-            allocated_amount,
+            budget_line_code,
+            budget_line_name,
+            budget_line_description,
+            budget_line_amount,
         };
 
         const budget = new Budget(budgetData);

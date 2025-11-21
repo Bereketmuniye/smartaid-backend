@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { Activity, User } = require("../../models");
 
 exports.createActivity = async (req, res) => {
+    console.log(req.body);
     try {
         const {
             name,

@@ -1,32 +1,45 @@
 const mongoose = require("mongoose");
-const { Project, Ngo } = require("../../models");
+const { Project, Donor } = require("../../models");
 
 exports.createProject = async (req, res) => {
     try {
         let {
             name,
+            donor: donorInput,
+            user: userInput,
+            type_of_fund,
+            financial_year,
+            month,
+            country,
+            project_number,
+            theme,
+            donor_currency,
+            current_value_in_donor_currency,
+            number_of_month,
             description,
             start_date,
+            project_duration,
             end_date,
             total_budget,
-            ngo: ngoInput,
+            status,
+            project_code,
         } = req.body;
 
-        let ngoId;
-        if (ngoInput) {
+        let donorId;
+        if (donorInput) {
             if (
-                typeof ngoInput === "string" &&
-                !mongoose.Types.ObjectId.isValid(ngoInput)
+                typeof donorInput === "string" &&
+                !mongoose.Types.ObjectId.isValid(donorInput)
             ) {
-                const ngoDoc = await Ngo.findOne({ name: ngoInput.trim() });
-                if (!ngoDoc) {
+                const donorDoc = await Donor.findOne({ name: donorInput.trim() });
+                if (!donorDoc) {
                     return res.status(400).json({
-                        message: `NGO "${ngoInput}" not found`,
+                        message: `Donor "${donorInput}" not found`,
                     });
                 }
-                ngoId = ngoDoc._id;
-            } else if (mongoose.Types.ObjectId.isValid(ngoInput)) {
-                ngoId = ngoInput;
+                donorId = donorDoc._id;
+            } else if (mongoose.Types.ObjectId.isValid(donorInput)) {
+                donorId = donorInput;
             } else {
                 return res
                     .status(400)
@@ -35,16 +48,29 @@ exports.createProject = async (req, res) => {
                     });
             }
         } else {
-            return res.status(400).json({ message: "NGO is required" });
+            return res.status(400).json({ message: "Donor is required" });
         }
 
         const projectData = {
+            donor: donorId,
+            user: userInput,
             name,
+            type_of_fund,
+            financial_year,
+            month,
+            country,
+            project_number,
+            theme,
+            donor_currency,
+            current_value_in_donor_currency,
+            number_of_month,
             description,
             start_date,
+            project_duration,
             end_date,
             total_budget,
-            ngo: ngoId,
+            status,
+            project_code,
         };
 
         const project = new Project(projectData);
@@ -68,7 +94,7 @@ exports.createProject = async (req, res) => {
 exports.getProjects = async (req, res) => {
     try {
         const projects = await Project.find().populate(
-            "ngo activities budgets",
+            "donor user activities budgets",
         );
         res.json(projects);
     } catch (error) {
@@ -80,7 +106,7 @@ exports.getProjects = async (req, res) => {
 exports.getProjectById = async (req, res) => {
     try {
         const project = await Project.findById(req.params.id).populate(
-            "ngo activities budgets donors",
+            "donor user activities budgets donors",
         );
         if (!project)
             return res.status(404).json({ message: "Project not found" });
@@ -90,3 +116,30 @@ exports.getProjectById = async (req, res) => {
         res.status(500).json({ message: "Failed to fetch project" });
     }
 };
+
+exports.getProjectsByDonor = async (req, res) => {
+    try {
+        const projects = await Project.find({ donor: req.params.donorId }).populate(
+            "donor user activities budgets",
+        );
+        res.json(projects);
+    } catch (error) {
+        console.error("Get projects by donor error:", error);
+        res.status(500).json({ message: "Failed to fetch projects" });
+    }
+};
+
+exports.getProjectsByUser = async (req, res) => {
+    try {
+        const projects = await Project.find({ user: req.params.userId }).populate(
+            "donor user activities budgets",
+        );
+        console.log(req.params.userId);
+        console.log(projects);
+        res.json(projects);
+    } catch (error) {
+        console.error("Get projects by user error:", error);
+        res.status(500).json({ message: "Failed to fetch projects" });
+    }
+};
+
