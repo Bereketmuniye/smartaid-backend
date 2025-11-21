@@ -10,12 +10,22 @@ exports.createDonor = async (req, res) => {
     }
 };
 
+
 exports.getDonors = async (req, res) => {
     try {
-        const donors = await Donor.find();
-        res.json(donors);
+        const donors = await Donor.find({ user: req.user._id })
+        .sort({ createdAt: -1 });
+        res.status(200).json({
+            success: true,
+            count: donors.length,
+            data: donors,
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error("Get donors error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error during donor fetching",
+        });
     }
 };
 

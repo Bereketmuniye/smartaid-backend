@@ -10,12 +10,22 @@ exports.createNgo = async (req, res) => {
     }
 };
 
+
 exports.getNgos = async (req, res) => {
     try {
-        const ngos = await Ngo.find();
-        res.status(200).json(ngos);
+        const ngos = await Ngo.find({ user: req.user._id })
+        .sort({ createdAt: -1 });
+        res.status(200).json({
+            success: true,
+            count: ngos.length,
+            data: ngos,
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Get ngos error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error during ngo fetching",
+        });
     }
 };
 

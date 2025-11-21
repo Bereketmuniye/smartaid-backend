@@ -9,7 +9,7 @@ const { ProjectDonor } = require("../models");
 
 // Project routes
 router.post("/", auth, projectCtrl.createProject);
-router.get("/", projectCtrl.getProjects);
+router.get("/",auth, projectCtrl.getProjects);
 router.get("/:id", auth, projectCtrl.getProjectById);
 router.get("/donor/:donorId", auth, projectCtrl.getProjectsByDonor);
 router.get("/user/:userId", auth, projectCtrl.getProjectsByUser);

@@ -9,5 +9,6 @@ router.post("/login", userCtrl.loginUser);
 router.get("/", auth, userCtrl.getUsers);
 router.put("/activate/:userId", auth, userCtrl.activateUser);
 router.put("/deactivate/:userId", auth, userCtrl.deactivateUser);
+router.get("/me", auth, userCtrl.getCurrentUser);
 
 module.exports = router;

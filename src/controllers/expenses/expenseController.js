@@ -48,3 +48,22 @@ exports.getExpensesByProject = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.getExpensesByProject = async (req, res) => {
+    try {
+        const expense = await Expense.find({ user: req.user._id,
+        })
+        .sort({ createdAt: -1 });
+        res.status(200).json({
+            success: true,
+            count: expense.length,
+            data: expense,
+        });
+    } catch (error) {
+        console.error("Get expenses error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error during expense fetching",
+        });
+    }
+};

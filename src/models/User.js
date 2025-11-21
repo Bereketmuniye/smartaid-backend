@@ -12,14 +12,14 @@ const userSchema = new mongoose.Schema(
             required: true,
         },
         ngo: { type: mongoose.Schema.Types.ObjectId, ref: "Ngo" },
-        status: { type: String, default: "inactive" },
+        status: { type: String, default: "active" },
     },
     { timestamps: true },
 );
 
 userSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
-    this.password = await bcrypt.hash(this.password, 12);
+    this.password = await bcrypt.hash(this.password, 8);
     next();
 });
 

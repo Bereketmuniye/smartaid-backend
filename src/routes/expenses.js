@@ -5,6 +5,6 @@ const auth = require("../middleware/auth");
 const upload = require("../utils/fileUploader");
 
 router.post("/", auth, upload.single("attachment"), expenseCtrl.createExpense);
-router.get("/project/:projectId", auth, expenseCtrl.getExpensesByProject);
+router.get("/", auth, expenseCtrl.getExpensesByProject);
 
 module.exports = router;

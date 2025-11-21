@@ -118,7 +118,9 @@ exports.loginUser = async (req, res) => {
                 .json({ message: "Invalid email or password" });
         }
 
-        const token = signToken({ id: user._id });
+        const token = signToken({ id: user._id,
+            role: user.role,
+         },process.env.JWT_SECRET,process.env.JWT_EXPIRES_IN);
 
         res.json({
             token,
@@ -126,6 +128,7 @@ exports.loginUser = async (req, res) => {
                 id: user._id,
                 name: user.name,
                 email: user.email,
+                role: user.role,
             },
         });
     } catch (error) {
@@ -152,7 +155,6 @@ exports.activateUser = async (req, res) => {
     try {
         const { userId } = req.params;
         const user = await activateUser(userId);
-        console.log("use = ",user);
         res.json(user);
     } catch (error) {
         console.error("Activate user error:", error);
@@ -168,5 +170,15 @@ exports.deactivateUser = async (req, res) => {
     } catch (error) {
         console.error("Deactivate user error:", error);
         res.status(500).json({ message: "Failed to deactivate user" });
+    }
+};
+
+exports.getCurrentUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        res.json(user);
+    } catch (error) {
+        console.error("Get current user error:", error);
+        res.status(500).json({ message: "Failed to fetch current user" });
     }
 };

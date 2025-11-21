@@ -5,10 +5,10 @@ const auth = require("../middleware/auth");
 
 
 router.post("/", auth, donorCtrl.createDonor);
-router.get("/", donorCtrl.getDonors);
-router.get("/:id", donorCtrl.getDonorById);
-router.put("/:id", donorCtrl.updateDonor);
-router.delete("/:id", donorCtrl.deleteDonor);
-router.get("/user/:id", donorCtrl.getDonorByUser);
+router.get("/",auth, donorCtrl.getDonors);
+router.get("/:id",auth, donorCtrl.getDonorById);
+router.put("/:id",auth, donorCtrl.updateDonor);
+router.delete("/:id",auth, donorCtrl.deleteDonor);
+router.get("/user/:id",auth, donorCtrl.getDonorByUser);
 
 module.exports = router;

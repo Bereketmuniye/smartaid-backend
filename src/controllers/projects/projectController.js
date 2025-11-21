@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const { Project, Donor } = require("../../models");
 
+
 exports.createProject = async (req, res) => {
     try {
         let {
@@ -93,13 +94,21 @@ exports.createProject = async (req, res) => {
 
 exports.getProjects = async (req, res) => {
     try {
-        const projects = await Project.find().populate(
+        const projects = await Project.find({ user: req.user._id }).populate(
             "donor user activities budgets",
-        );
-        res.json(projects);
+        )
+        .sort({ createdAt: -1 });
+        res.status(200).json({
+            success: true,
+            count: projects.length,
+            data: projects,
+        });
     } catch (error) {
         console.error("Get projects error:", error);
-        res.status(500).json({ message: "Failed to fetch projects" });
+        res.status(500).json({
+            success: false,
+            message: "Internal server error during project fetching",
+        });
     }
 };
 
@@ -110,10 +119,17 @@ exports.getProjectById = async (req, res) => {
         );
         if (!project)
             return res.status(404).json({ message: "Project not found" });
-        res.json(project);
+        res.status(200).json({
+            success: true,
+            count: project.length,
+            data: project,
+        });
     } catch (error) {
         console.error("Get project error:", error);
-        res.status(500).json({ message: "Failed to fetch project" });
+        res.status(500).json({
+            success: false,
+            message: "Internal server error during project fetching",
+        });
     }
 };
 
@@ -122,10 +138,17 @@ exports.getProjectsByDonor = async (req, res) => {
         const projects = await Project.find({ donor: req.params.donorId }).populate(
             "donor user activities budgets",
         );
-        res.json(projects);
+        res.status(200).json({
+            success: true,
+            count: projects.length,
+            data: projects,
+        });
     } catch (error) {
         console.error("Get projects by donor error:", error);
-        res.status(500).json({ message: "Failed to fetch projects" });
+        res.status(500).json({
+            success: false,
+            message: "Internal server error during project fetching",
+        });
     }
 };
 
@@ -134,12 +157,17 @@ exports.getProjectsByUser = async (req, res) => {
         const projects = await Project.find({ user: req.params.userId }).populate(
             "donor user activities budgets",
         );
-        console.log(req.params.userId);
-        console.log(projects);
-        res.json(projects);
+        res.status(200).json({
+            success: true,
+            count: projects.length,
+            data: projects,
+        });
     } catch (error) {
         console.error("Get projects by user error:", error);
-        res.status(500).json({ message: "Failed to fetch projects" });
+        res.status(500).json({
+            success: false,
+            message: "Internal server error during project fetching",
+        });
     }
 };
 
