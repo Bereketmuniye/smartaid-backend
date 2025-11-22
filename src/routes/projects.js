@@ -14,17 +14,11 @@ router.get("/:id", auth, projectCtrl.getProjectById);
 router.get("/donor/:donorId", auth, projectCtrl.getProjectsByDonor);
 router.get("/user/:userId", auth, projectCtrl.getProjectsByUser);
 
-// Sub-routes
-const activityRouter = express.Router();
-activityRouter.post("/", auth, activityCtrl.createActivity);
-activityRouter.get("/", auth, activityCtrl.getActivitiesByProject);
-router.use("/:projectId/activities", auth, activityRouter);
+router.post("/activities/:projectId", auth, activityCtrl.createActivity);
+router.get("/activities/:projectId", auth, activityCtrl.getActivitiesByProject);
 
-const budgetRouter = express.Router({ mergeParams: true });
-budgetRouter.post("/", auth, budgetCtrl.createBudget);
-budgetRouter.get("/", auth, budgetCtrl.getBudgetsByProject);
-router.use("/:projectId/budgets", auth, budgetRouter);
-
+router.post("/budgets/:projectId", auth, budgetCtrl.createBudget);
+router.get("/budgets/:projectId", auth, budgetCtrl.getBudgetsByProject);
 
 
 

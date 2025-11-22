@@ -42,6 +42,7 @@ exports.createBudget = async (req, res) => {
         }
     }
 };
+
 exports.getBudgetsByProject = async (req, res) => {
     try {
         // Temp debug logs

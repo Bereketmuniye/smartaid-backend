@@ -17,7 +17,6 @@ const expenseSchema = new mongoose.Schema(
         over_underspend: { type: Number, required: true },
         actual_financial_ytd: { type: Number, required: true },
         recent_financial_ytd: { type: Number, required: true },
-        attachment: { type: String },
         created_by: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",

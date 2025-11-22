@@ -4,7 +4,7 @@ const expenseCtrl = require("../controllers/expenses/expenseController");
 const auth = require("../middleware/auth");
 const upload = require("../utils/fileUploader");
 
-router.post("/", auth, upload.single("attachment"), expenseCtrl.createExpense);
+router.post("/", auth, expenseCtrl.createExpense);
 router.get("/", auth, expenseCtrl.getExpensesByProject);
 
 module.exports = router;

@@ -27,7 +27,6 @@ exports.createExpense = async (req, res) => {
             actual_financial_ytd: actualFinancialYtd || 0,
             recent_financial_ytd: recentFinancialYtd || 0,
             expense_date,
-            attachment: req.file ? req.file.path : null,
             created_by: req.user.id,
         };
         const expense = new Expense(expenseData);
@@ -40,21 +39,9 @@ exports.createExpense = async (req, res) => {
 
 exports.getExpensesByProject = async (req, res) => {
     try {
-        const expenses = await Expense.find({
-            project: req.params.projectId,
-        }).populate("activity budget created_by");
-        res.json(expenses);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-exports.getExpensesByProject = async (req, res) => {
-    try {
-        const expense = await Expense.find({ user: req.user._id,
-        })
+        const expense = await Expense.find({ created_by: req.user._id })
         .sort({ createdAt: -1 });
-        res.status(200).json({
+        res.status(200).json({  
             success: true,
             count: expense.length,
             data: expense,
